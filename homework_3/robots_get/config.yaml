@@ -1,0 +1,9 @@
+app:
+  auth: 'https://robot-dreams-de-api.herokuapp.com/auth'
+  username: 'rd_dreams'
+  password: 'djT6LasE'
+  url: 'https://robot-dreams-de-api.herokuapp.com/out_of_stock'
+  dates:
+    - '2021-01-03'
+    - '2021-01-04'
+    - '2021-01-05'

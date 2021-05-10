@@ -4,13 +4,9 @@ import yaml
 import os
 from requests import HTTPError
 
-def load_config(config_path):
-    with open(config_path, mode='r') as yaml_file:
-        config = yaml.safe_load(yaml_file)
-    return config['app']
-
-
-def robot_auth(config):
+def robot_get():
+    with open(os.path.join(os.getcwd(), 'config/config.yaml'), mode='r') as yaml_file:
+        config = yaml.safe_load(yaml_file)['app']
 
     auth = config['auth']
     headers = {'content-type': 'application/json'}
@@ -18,10 +14,6 @@ def robot_auth(config):
 
     r = requests.post(auth, data=json.dumps(data), headers=headers, timeout=10)
     token = r.json()['access_token']
-
-    return token
-
-def robot_get(config, token):
 
     url = config['url']
     headers = {'content-type': 'application/json', 'Authorization': 'JWT ' + token}
@@ -34,12 +26,11 @@ def robot_get(config, token):
         except HTTPError:
             continue
 
-        with open(os.path.join(os.getcwd(), 'data', 'result.json'), 'w') as f:
+        if not os.path.exists(os.path.join(os.getcwd(), 'data')):
+            os.makedirs(os.path.join(os.getcwd(), 'data'))
+        with open(os.path.join(os.getcwd(), 'data/result.json'), 'w') as f:
             json.dump(data, f)
 
 
 
-if __name__ == '__main__':
-    config = load_config('./config.yaml')
-    token = robot_auth(config)
-    robot_get(config, token)
+
