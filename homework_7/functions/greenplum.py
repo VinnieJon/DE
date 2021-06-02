@@ -14,11 +14,11 @@ def gold_auth():
     gp_url = conn['host']
     gp_properties = {"user": conn['user'], "password": conn['password']}
 
-    spark = SparkSession.builder \
-        .config('spark.driver.extraClassPath'
-                , '/home/user/shared_folder/postgresql-42.2.20.jar') \
-        .master('local') \
-        .appName('gold_load') \
+    spark = SparkSession.builder\
+        .config('spark.driver.extraClassPath'\
+                , '/home/user/shared_folder/postgresql-42.2.20.jar')\
+        .master('local')\
+        .appName('gold_load')\
         .getOrCreate()
 
     return gp_url, gp_properties, spark
@@ -93,9 +93,9 @@ def load_to_gold_products():
 def load_to_gold(table):
     gp_url, gp_properties, spark = gold_auth()
 
-    table = spark.read.parquet('/silver/postgres/' + table)
+    df = spark.read.parquet('/silver/postgres/' + table)
 
-    table.write.jdbc(gp_url
+    df.write.jdbc(gp_url
                   , table=table
                   , properties=gp_properties
                   , mode='overwrite')
@@ -104,9 +104,9 @@ def load_to_gold(table):
 def load_to_gold_out_of_stock(date):
     gp_url, gp_properties, spark = gold_auth()
 
-    table = spark.read.parquet(os.path.join('/silver/out_of_stock', date))
+    df = spark.read.parquet(os.path.join('/silver/out_of_stock', date))
 
-    table.write.jdbc(gp_url
+    df.write.jdbc(gp_url
                      , table=table
                      , properties=gp_properties
                      , mode='append')
